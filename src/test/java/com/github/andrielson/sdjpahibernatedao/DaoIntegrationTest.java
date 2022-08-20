@@ -77,14 +77,14 @@ public class DaoIntegrationTest {
 //
 //        assertThat(saved).isNotNull();
 //    }
-//
-//    @Test
-//    void testGetBookByTitle() {
-//        Book book = bookDao.findBookByTitle("Clean Code");
-//
-//        assertThat(book).isNotNull();
-//    }
-//
+
+    @Test
+    void testGetBookByTitle() {
+        Book book = bookDao.findBookByTitle("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
     @Test
     void testGetBook() {
         Book book = bookDao.getById(3L);
