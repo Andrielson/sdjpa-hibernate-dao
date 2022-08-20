@@ -2,28 +2,29 @@ package com.github.andrielson.sdjpahibernatedao;
 
 import com.github.andrielson.sdjpahibernatedao.dao.AuthorDao;
 import com.github.andrielson.sdjpahibernatedao.dao.AuthorDaoImpl;
+import com.github.andrielson.sdjpahibernatedao.dao.BookDao;
+import com.github.andrielson.sdjpahibernatedao.dao.BookDaoImpl;
 import com.github.andrielson.sdjpahibernatedao.domain.Author;
+import com.github.andrielson.sdjpahibernatedao.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("local")
 @DataJpaTest
-@Import(AuthorDaoImpl.class)
+@Import({AuthorDaoImpl.class, BookDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DaoIntegrationTest {
     @Autowired
     AuthorDao authorDao;
 
-    //    @Autowired
-//    BookDao bookDao;
+    @Autowired
+    BookDao bookDao;
 //
 //    @Test
 //    void testDeleteBook() {
@@ -78,18 +79,18 @@ public class DaoIntegrationTest {
 //    }
 //
 //    @Test
-//    void testGetBookByName() {
+//    void testGetBookByTitle() {
 //        Book book = bookDao.findBookByTitle("Clean Code");
 //
 //        assertThat(book).isNotNull();
 //    }
 //
-//    @Test
-//    void testGetBook() {
-//        Book book = bookDao.getById(3L);
-//
-//        assertThat(book.getId()).isNotNull();
-//    }
+    @Test
+    void testGetBook() {
+        Book book = bookDao.getById(3L);
+
+        assertThat(book.getId()).isNotNull();
+    }
 
     @Test
     void testDeleteAuthor() {
