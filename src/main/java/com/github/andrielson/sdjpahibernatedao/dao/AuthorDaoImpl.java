@@ -17,15 +17,21 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author getById(Long id) {
-        return getEntityManager().find(Author.class, id);
+        var em = getEntityManager();
+        var author = em.find(Author.class, id);
+        em.close();
+        return author;
     }
 
     @Override
     public Author findAuthorByName(String firstName, String lastName) {
-        var query = getEntityManager().createQuery("SELECT a FROM Author a WHERE a.firstName = :first_name AND a.lastName = :last_name", Author.class);
+        var em = getEntityManager();
+        var query = em.createQuery("SELECT a FROM Author a WHERE a.firstName = :first_name AND a.lastName = :last_name", Author.class);
         query.setParameter("first_name", firstName);
         query.setParameter("last_name", lastName);
-        return query.getSingleResult();
+        var author = query.getSingleResult();
+        em.close();
+        return author;
     }
 
     @Override
@@ -36,6 +42,7 @@ public class AuthorDaoImpl implements AuthorDao {
         em.persist(author);
         em.flush();
         em.getTransaction().commit();
+        em.close();
 
         return author;
     }
@@ -43,11 +50,17 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Author updateAuthor(Author author) {
         var em = getEntityManager();
-        em.joinTransaction();
-        em.merge(author);
-        em.flush();
-        em.clear();
-        return em.find(Author.class, author.getId());
+
+        try {
+            em.joinTransaction();
+            em.merge(author);
+            em.flush();
+            em.clear();
+            var saved = em.find(Author.class, author.getId());
+            return saved;
+        } finally {
+            em.close();
+        }
     }
 
     @Override
@@ -58,6 +71,7 @@ public class AuthorDaoImpl implements AuthorDao {
         em.remove(author);
         em.flush();
         em.getTransaction().commit();
+        em.close();
     }
 
     private EntityManager getEntityManager() {
