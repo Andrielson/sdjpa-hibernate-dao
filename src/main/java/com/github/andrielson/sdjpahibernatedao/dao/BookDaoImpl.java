@@ -27,12 +27,19 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public Book saveNewBook(Book Book) {
-        return null;
+    public Book saveNewBook(Book book) {
+        var em = getEntityManager();
+
+        em.getTransaction().begin();
+        em.persist(book);
+        em.flush();
+        em.getTransaction().commit();
+
+        return book;
     }
 
     @Override
-    public Book updateBook(Book Book) {
+    public Book updateBook(Book book) {
         return null;
     }
 
