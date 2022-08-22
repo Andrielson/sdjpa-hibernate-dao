@@ -3,7 +3,6 @@ package com.github.andrielson.sdjpahibernatedao.dao;
 import com.github.andrielson.sdjpahibernatedao.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -83,7 +82,7 @@ public class AuthorDaoImpl implements AuthorDao {
 
         try {
             var query = em.createQuery("SELECT a FROM Author a WHERE a.lastName LIKE :last_name", Author.class);
-            query.setParameter("last_name", lastName+"%");
+            query.setParameter("last_name", lastName + "%");
             var authors = query.getResultList();
             return authors;
         } finally {
@@ -98,6 +97,33 @@ public class AuthorDaoImpl implements AuthorDao {
         try {
             var query = em.createNamedQuery("author_find_all", Author.class);
             return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Author findAuthorByNameCriteria(String firstName, String lastName) {
+        var em = getEntityManager();
+        try {
+            var criteriaBuilder = em.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Author.class);
+
+            var root = criteriaQuery.from(Author.class);
+
+            var firstNameParam = criteriaBuilder.parameter(String.class);
+            var lastNameParam = criteriaBuilder.parameter(String.class);
+
+            var firstNamePred = criteriaBuilder.equal(root.get("firstName"), firstNameParam);
+            var lastNamePred = criteriaBuilder.equal(root.get("lastName"), lastNameParam);
+
+            criteriaQuery.select(root).where(criteriaBuilder.and(firstNamePred, lastNamePred));
+
+            var query = em.createQuery(criteriaQuery);
+            query.setParameter(firstNameParam, firstName);
+            query.setParameter(lastNameParam, lastName);
+
+            return query.getSingleResult();
         } finally {
             em.close();
         }

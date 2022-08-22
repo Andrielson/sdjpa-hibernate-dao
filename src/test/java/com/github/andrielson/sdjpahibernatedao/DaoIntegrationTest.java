@@ -36,6 +36,12 @@ public class DaoIntegrationTest {
     }
 
     @Test
+    void testGetAuthorByNameCriteria() {
+        Author author = authorDao.findAuthorByNameCriteria("Craig", "Walls");
+        assertThat(author).isNotNull();
+    }
+
+    @Test
     void testFindBookByISBN() {
         var book = new Book();
         book.setIsbn("1234" + RandomString.make());
