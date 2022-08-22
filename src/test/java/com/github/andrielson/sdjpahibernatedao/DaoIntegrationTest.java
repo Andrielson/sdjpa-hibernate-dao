@@ -27,6 +27,13 @@ public class DaoIntegrationTest {
     BookDao bookDao;
 
     @Test
+    void testListAuthorByLastNameLike() {
+        var authors = authorDao.listAuthorByLastNameLike("Wall");
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isGreaterThan(0);
+    }
+
+    @Test
     void testDeleteBook() {
         Book book = new Book();
         book.setIsbn("1234");

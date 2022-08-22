@@ -3,7 +3,10 @@ package com.github.andrielson.sdjpahibernatedao.dao;
 import com.github.andrielson.sdjpahibernatedao.domain.Author;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AuthorDaoImpl implements AuthorDao {
@@ -72,6 +75,20 @@ public class AuthorDaoImpl implements AuthorDao {
         em.flush();
         em.getTransaction().commit();
         em.close();
+    }
+
+    @Override
+    public List<Author> listAuthorByLastNameLike(String lastName) {
+        var em = getEntityManager();
+
+        try {
+            var query = em.createQuery("SELECT a FROM Author a WHERE a.lastName LIKE :last_name", Author.class);
+            query.setParameter("last_name", lastName+"%");
+            var authors = query.getResultList();
+            return authors;
+        } finally {
+            em.close();
+        }
     }
 
     private EntityManager getEntityManager() {
