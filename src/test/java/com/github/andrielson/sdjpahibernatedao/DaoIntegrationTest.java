@@ -6,6 +6,7 @@ import com.github.andrielson.sdjpahibernatedao.dao.BookDao;
 import com.github.andrielson.sdjpahibernatedao.dao.BookDaoImpl;
 import com.github.andrielson.sdjpahibernatedao.domain.Author;
 import com.github.andrielson.sdjpahibernatedao.domain.Book;
+import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -25,6 +26,16 @@ public class DaoIntegrationTest {
 
     @Autowired
     BookDao bookDao;
+
+    @Test
+    void testFindBookByISBN() {
+        var book = new Book();
+        book.setIsbn("1234" + RandomString.make());
+        book.setTitle("ISBN TEST");
+        var saved = bookDao.saveNewBook(book);
+        var fetched = bookDao.findByISBN(book.getIsbn());
+        assertThat(fetched).isNotNull();
+    }
 
     @Test
     void testListAuthorByLastNameLike() {
