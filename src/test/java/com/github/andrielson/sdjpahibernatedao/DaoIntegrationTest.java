@@ -28,6 +28,14 @@ public class DaoIntegrationTest {
     BookDao bookDao;
 
     @Test
+    void testFindAllAuthors() {
+        var authors = authorDao.findAll();
+
+        assertThat(authors).isNotNull();
+        assertThat(authors.size()).isGreaterThan(0);
+    }
+
+    @Test
     void testFindBookByISBN() {
         var book = new Book();
         book.setIsbn("1234" + RandomString.make());
