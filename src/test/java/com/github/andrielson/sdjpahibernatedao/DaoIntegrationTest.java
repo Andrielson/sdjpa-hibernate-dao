@@ -174,4 +174,10 @@ public class DaoIntegrationTest {
         assertThat(author).isNotNull();
 
     }
+
+    @Test
+    void testGetAuthorByNameNative() {
+        var author = authorDao.findAuthorByNameNative("Craig", "Walls");
+        assertThat(author).isNotNull();
+    }
 }
